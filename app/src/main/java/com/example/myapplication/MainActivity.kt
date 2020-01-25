@@ -1,153 +1,53 @@
 package com.example.myapplication
 
-import android.Manifest
-import android.content.Intent
 import android.content.pm.PackageManager
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Environment
-import androidx.annotation.RequiresApi
+import android.view.WindowManager
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import io.fotoapparat.Fotoapparat
-import io.fotoapparat.configuration.CameraConfiguration
-import io.fotoapparat.log.logcat
-import io.fotoapparat.log.loggers
-import io.fotoapparat.parameter.ScaleType
-import io.fotoapparat.selector.*
-import io.fotoapparat.view.CameraView
 import kotlinx.android.synthetic.main.activity_main.*
-import java.io.File
 
 class MainActivity : AppCompatActivity() {
-
-    var fotoapparat: Fotoapparat? = null
-    val filename = "test.png"
-    val sd = Environment.getExternalStorageDirectory()
-    val dest = File(sd, filename)
-    var fotoapparatState : FotoapparatState? = null
-    var cameraStatus : CameraState? = null
-    var flashState: FlashState? = null
-
-    val permissions = arrayOf(android.Manifest.permission.CAMERA, android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE)
+    private val PERMISSION_REQUEST_CODE = 3
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
+
         setContentView(R.layout.activity_main)
-
-        createFotoapparat()
-
-        cameraStatus = CameraState.BACK
-        flashState = FlashState.OFF
-        fotoapparatState = FotoapparatState.OFF
-
-        fab_camera.setOnClickListener {
-            takePhoto()
-        }
-
-        fab_switch_camera.setOnClickListener {
-            switchCamera()
-        }
-
-        fab_flash.setOnClickListener {
-            changeFlashState()
-        }
+        checkAndRequestCameraPermission()
     }
 
-    private fun createFotoapparat(){
-        val cameraView = findViewById<CameraView>(R.id.camera_view)
-
-        fotoapparat = Fotoapparat(
-            context = this,
-            view = cameraView,
-            scaleType = ScaleType.CenterCrop,
-            lensPosition = back(),
-            logger = loggers(
-                logcat()
-            ),
-            cameraErrorCallback = { error ->
-                println("Recorder errors: $error")
-            }
-        )
-    }
-
-    private fun changeFlashState() {
-        fotoapparat?.updateConfiguration(
-            CameraConfiguration(
-                flashMode = if(flashState == FlashState.TORCH) off() else torch()
+    private fun checkAndRequestCameraPermission() {
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this, arrayOf(android.Manifest.permission.CAMERA),
+                PERMISSION_REQUEST_CODE
             )
-        )
-
-        if(flashState == FlashState.TORCH) flashState = FlashState.OFF
-        else flashState = FlashState.TORCH
-    }
-
-    private fun switchCamera() {
-        fotoapparat?.switchTo(
-            lensPosition =  if (cameraStatus == CameraState.BACK) front() else back(),
-            cameraConfiguration = CameraConfiguration()
-        )
-
-        if(cameraStatus == CameraState.BACK) cameraStatus = CameraState.FRONT
-        else cameraStatus = CameraState.BACK
-    }
-
-    private fun takePhoto() {
-        if (hasNoPermissions()) {
-            requestPermission()
-        }else{
-            fotoapparat
-                ?.takePicture()
-                ?.saveToFile(dest)
+        } else {
+            startFaceProcessor()
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        if (hasNoPermissions()) {
-            requestPermission()
-        }else{
-            fotoapparat?.start()
-            fotoapparatState = FotoapparatState.ON
+    private fun startFaceProcessor() {
+        lifecycle.addObserver(MainActivityLifecycleObserver(camera_view))
+
+        val faceProcessor = FaceProcessor(camera_view, overlay_view)
+        faceProcessor.startProcessing()
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (android.Manifest.permission.CAMERA == permissions[0] &&
+                grantResults[0] == PackageManager.PERMISSION_GRANTED
+            ) {
+                startFaceProcessor()
+            }
         }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
-    private fun hasNoPermissions(): Boolean{
-        return ContextCompat.checkSelfPermission(this,
-            Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this,
-            Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
-    }
-
-    fun requestPermission(){
-        ActivityCompat.requestPermissions(this, permissions,0)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        fotoapparat?.stop()
-        FotoapparatState.OFF
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if(!hasNoPermissions() && fotoapparatState == FotoapparatState.OFF){
-            val intent = Intent(baseContext, MainActivity::class.java)
-            startActivity(intent)
-            finish()
-        }
-    }
 }
 
-enum class CameraState{
-    FRONT, BACK
-}
-
-enum class FlashState{
-    TORCH, OFF
-}
-
-enum class FotoapparatState{
-    ON, OFF
-}

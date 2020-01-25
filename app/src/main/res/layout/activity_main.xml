@@ -7,11 +7,18 @@
         tools:context=".MainActivity"
         android:background="@android:color/black">
 
-    <io.fotoapparat.view.CameraView
+    <com.otaliastudios.cameraview.CameraView
             android:id="@+id/camera_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@id/fab_camera"/>
+            android:adjustViewBounds="true"
+            android:keepScreenOn="true"/>
+
+    <com.zqc.ml.snapchat.OverlayView
+            android:id="@+id/overlay_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_camera"
