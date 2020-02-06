@@ -1,4 +1,4 @@
 package com.example.myapplication
 
-class OverlayView {
+class VisionImage {
 }

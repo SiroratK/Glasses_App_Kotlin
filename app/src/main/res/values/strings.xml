@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">My Application</string>
+    <string name="permission_required">permission require</string>
+    <string name="drawer_open">Open Navigation Drawer</string>
+    <string name="drewer_close">close nevigation drawer</string>
+    <string name="camera_request_rationale">request</string>
 </resources>
