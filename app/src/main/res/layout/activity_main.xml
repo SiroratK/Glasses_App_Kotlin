@@ -7,15 +7,18 @@
         android:layout_height="match_parent"
         tools:context=".MainActivity">
 
-
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="What frame shape is best for my face?"/>
     <Button
             android:id="@+id/button2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:onClick="faceDetection"
-            android:text="Start !"
+            android:text="Try it!"
             app:srcCompat="@drawable/face_contour"
-
             tools:layout_editor_absoluteX="0dp"
             tools:layout_editor_absoluteY="16dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

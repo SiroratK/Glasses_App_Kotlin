@@ -8,4 +8,5 @@
     <string name="camera_description">camera take image</string>
     <string name="image_text_recognition_desc">image text recognition description</string>
     <string name="text_view_text_recognition">recognized text</string>
+    <string name="image_face_detection">image face detection description</string>
 </resources>

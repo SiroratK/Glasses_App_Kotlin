@@ -5,22 +5,31 @@
                                                    android:layout_height="match_parent">
 
     <ImageView
-            android:id="@+id/image_face_detection"
+            android:id="@+id/imageFaceDetection"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="32dp"
+            android:contentDescription="@string/image_face_detection"
             android:onClick="cameraFaceDetection"
-            android:contentDescription="@string/image_text_recognition_desc"
-            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="parent"
-            tools:srcCompat="@drawable/face_1" android:scaleType="fitStart"/>
+            android:scaleType="fitStart"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:srcCompat="@drawable/face_1" />
 
     <com.example.myapplication.GraphicOverlay
             android:id="@+id/graphic_overlay"
-            android:foregroundGravity="center"
-            app:layout_constraintBottom_toBottomOf="@id/image_face_detection"
-            app:layout_constraintTop_toTopOf="@id/image_face_detection"
-            app:layout_constraintLeft_toLeftOf="@id/image_face_detection"
-            app:layout_constraintRight_toRightOf="@id/image_face_detection"
             android:layout_width="0dp"
-            android:layout_height="0dp"/>
+            android:layout_height="0dp"
+            android:foregroundGravity="center"
+            app:layout_constraintBottom_toBottomOf="@id/imageFaceDetection"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintLeft_toLeftOf="@id/imageFaceDetection"
+            app:layout_constraintRight_toRightOf="@id/imageFaceDetection"
+            app:layout_constraintTop_toTopOf="@id/imageFaceDetection"
+            app:layout_constraintVertical_bias="0.0" />
 </androidx.constraintlayout.widget.ConstraintLayout>
