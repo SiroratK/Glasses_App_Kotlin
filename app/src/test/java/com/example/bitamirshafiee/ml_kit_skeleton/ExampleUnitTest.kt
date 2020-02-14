@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.example.bitamirshafiee.ml_kit_skeleton
 
 import org.junit.Test
 

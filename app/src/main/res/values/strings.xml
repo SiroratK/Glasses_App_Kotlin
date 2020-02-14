@@ -1,12 +1,9 @@
 <resources>
-    <string name="app_name">My Application</string>
-    <string name="permission_required">permission require</string>
-    <string name="drawer_open">Open Navigation Drawer</string>
-    <string name="drewer_close">close nevigation drawer</string>
-    <string name="camera_request_rationale">request</string>
-    <string name="gallery_description">gallery image</string>
+    <string name="app_name">ML-Kit-Skeleton</string>
+    <string name="text_recognition_string">Text Recognition</string>
     <string name="camera_description">camera take image</string>
-    <string name="image_text_recognition_desc">image text recognition description</string>
     <string name="text_view_text_recognition">recognized text</string>
-    <string name="image_face_detection">image face detection description</string>
+    <string name="image_text_recognition_desc">image text recognition description</string>
+    <string name="gallery_description">gallery image</string>
+    <string name="title_activity_image_labeling">ImageLabeling</string>
 </resources>

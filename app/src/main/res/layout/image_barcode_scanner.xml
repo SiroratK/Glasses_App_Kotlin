@@ -5,22 +5,12 @@
                                                    android:layout_height="match_parent">
 
     <ImageView
-            android:id="@+id/image_face_detection"
+            android:id="@+id/image_barcode_scanner"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:onClick="cameraFaceDetection"
             android:contentDescription="@string/image_text_recognition_desc"
             app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="parent"
-            tools:srcCompat="@drawable/face_1" android:scaleType="fitStart"/>
-
-    <com.example.bitamirshafiee.ml_kit_skeleton.GraphicOverlay
-            android:id="@+id/graphic_overlay"
-            android:foregroundGravity="center"
-            app:layout_constraintBottom_toBottomOf="@id/image_face_detection"
-            app:layout_constraintTop_toTopOf="@id/image_face_detection"
-            app:layout_constraintLeft_toLeftOf="@id/image_face_detection"
-            app:layout_constraintRight_toRightOf="@id/image_face_detection"
-            android:layout_width="0dp"
-            android:layout_height="0dp"/>
+            tools:srcCompat="@drawable/face_1" android:scaleType="fitStart" android:layout_marginTop="8dp"
+            android:layout_marginStart="8dp" android:layout_marginEnd="8dp" android:layout_marginBottom="30dp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
