@@ -72,15 +72,21 @@ class FaceContourGraphic(overlay: GraphicOverlay) : GraphicOverlay.Graphic(overl
         if (leftE != null && rightE != null) {
             val eyeDistance = rightE.position.x - leftE.position.x
             val delta = (widthScaleFactor * eyeDistance / 2).toInt()
+            val leftRect = translateX(leftE.position.x)-delta*1.3.toFloat()
+            val topRec = translateY(leftE.position.y)-delta
+            val rightRec = translateX(rightE.position.x)+delta*1.3.toFloat()
+            val bottomRec = translateY(rightE.position.y)+delta
             val glassesRect = Rect(
-                translateX(leftE.position.x).toInt()-delta,
+                translateX(leftE.position.x).toInt()-(delta*1.3).toInt(),
                 translateY(leftE.position.y).toInt()-delta,
-                translateX(rightE.position.x).toInt()+delta,
+                translateX(rightE.position.x).toInt()+(delta*1.3).toInt(),
                 translateY(rightE.position.y).toInt()+delta)
+            Log.e("check","eye distance = $eyeDistance")
+
+            canvas.drawRect(leftRect, topRec, rightRec, bottomRec, boxPaint)
             Log.e("check","eye distance = $eyeDistance")
             val glassesBitmap: Bitmap = BitmapFactory.decodeResource(applicationContext.resources, R.drawable.waterdrop_glasses)
             canvas.drawBitmap(glassesBitmap, null, glassesRect, null)
-
         }
 
 
