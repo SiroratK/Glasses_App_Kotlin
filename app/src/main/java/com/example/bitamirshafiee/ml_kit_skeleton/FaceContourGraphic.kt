@@ -55,6 +55,8 @@ class FaceContourGraphic(overlay: GraphicOverlay) : GraphicOverlay.Graphic(overl
         postInvalidate()
     }
 
+
+
     /** Draws the face annotations for position on the supplied canvas.  */
     override fun draw(canvas: Canvas) {
         val face = firebaseVisionFace ?: return
@@ -69,13 +71,15 @@ class FaceContourGraphic(overlay: GraphicOverlay) : GraphicOverlay.Graphic(overl
         var glassPoint :Int? = null
         if (leftE != null && rightE != null) {
             val eyeDistance = rightE.position.x - leftE.position.x
-            val delta = (widthScaleFactor * eyeDistance / 2)
-            val leftRect = translateX(leftE.position.x)-delta
-            val topRec = translateY(leftE.position.y)-delta
-            val rightRec = translateX(rightE.position.x)+delta
-            val bottomRec = translateY(rightE.position.y)+delta
-            canvas.drawRect(leftRect, topRec, rightRec, bottomRec, boxPaint)
+            val delta = (widthScaleFactor * eyeDistance / 2).toInt()
+            val glassesRect = Rect(
+                translateX(leftE.position.x).toInt()-delta,
+                translateY(leftE.position.y).toInt()-delta,
+                translateX(rightE.position.x).toInt()+delta,
+                translateY(rightE.position.y).toInt()+delta)
             Log.e("check","eye distance = $eyeDistance")
+            val glassesBitmap: Bitmap = BitmapFactory.decodeResource(applicationContext.resources, R.drawable.waterdrop_glasses)
+            canvas.drawBitmap(glassesBitmap, null, glassesRect, null)
 
         }
 

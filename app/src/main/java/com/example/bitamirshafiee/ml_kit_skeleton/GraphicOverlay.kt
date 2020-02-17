@@ -47,6 +47,7 @@ class GraphicOverlay(context: Context, attrs: AttributeSet) : View(context, attr
     private var facing = CameraCharacteristics.LENS_FACING_BACK
     private val graphics = HashSet<Graphic>()
 
+
     /**
      * Base class for a custom graphics object to be rendered within the graphic overlay. Subclass
      * this and implement the [Graphic.draw] method to define the graphics element. Add
@@ -113,6 +114,8 @@ class GraphicOverlay(context: Context, attrs: AttributeSet) : View(context, attr
         }
     }
 
+
+
     /**
      * Removes all graphics from the overlay.
      */
@@ -155,8 +158,6 @@ class GraphicOverlay(context: Context, attrs: AttributeSet) : View(context, attr
         }
         postInvalidate()
     }
-
-    private val glassesBitmap: Bitmap = BitmapFactory.decodeResource(resources, R.drawable.waterdrop_glasses)
 
     /**
      * Draws the overlay with its associated graphic objects.
