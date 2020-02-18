@@ -1,9 +1,6 @@
 package com.example.bitamirshafiee.ml_kit_skeleton
 
-
-import android.content.Context
 import android.graphics.*
-import android.graphics.drawable.BitmapDrawable
 import android.util.Log
 import com.google.firebase.ml.vision.face.FirebaseVisionFace
 import com.google.firebase.ml.vision.face.FirebaseVisionFaceContour
@@ -72,17 +69,16 @@ class FaceContourGraphic(overlay: GraphicOverlay) : GraphicOverlay.Graphic(overl
         if (leftE != null && rightE != null) {
             val eyeDistance = rightE.position.x - leftE.position.x
             val delta = (widthScaleFactor * eyeDistance / 2).toInt()
-            val leftRect = translateX(leftE.position.x)-delta*1.3.toFloat()
+            val leftRect = translateX(leftE.position.x)-delta
             val topRec = translateY(leftE.position.y)-delta
-            val rightRec = translateX(rightE.position.x)+delta*1.3.toFloat()
+            val rightRec = translateX(rightE.position.x)+delta
             val bottomRec = translateY(rightE.position.y)+delta
             val glassesRect = Rect(
-                translateX(leftE.position.x).toInt()-(delta*1.3).toInt(),
+                translateX(leftE.position.x).toInt()-(delta).toInt(),
                 translateY(leftE.position.y).toInt()-delta,
-                translateX(rightE.position.x).toInt()+(delta*1.3).toInt(),
+                translateX(rightE.position.x).toInt()+(delta).toInt(),
                 translateY(rightE.position.y).toInt()+delta)
             Log.e("check","eye distance = $eyeDistance")
-
             canvas.drawRect(leftRect, topRec, rightRec, bottomRec, boxPaint)
             Log.e("check","eye distance = $eyeDistance")
             val glassesBitmap: Bitmap = BitmapFactory.decodeResource(applicationContext.resources, R.drawable.waterdrop_glasses)
@@ -111,47 +107,6 @@ class FaceContourGraphic(overlay: GraphicOverlay) : GraphicOverlay.Graphic(overl
             canvas.drawCircle(px, py, FACE_POSITION_RADIUS, facePositionPaint)
         }
 
-
-//
-//
-//        val contour2 = face.getContour(FirebaseVisionFaceContour.RIGHT_EYE)
-//        for (point in contour2.points) {
-//            val px = translateX(point.x!!)
-//            val py = translateY(point.y!!)
-//            canvas.drawCircle(px, py, FACE_POSITION_RADIUS, facePositionPaint)
-//        }
-
-//        val contour2 = face.getContour(FirebaseVisionFaceContour.ALL_POINTS)
-//        for (point in contour2.points) {
-//            val px = translateX(point.x!!)
-//            val py = translateY(point.y!!)
-//            canvas.drawCircle(px, py, FACE_POSITION_RADIUS, facePositionPaint)
-//        }
-
-
-
-        //    if (face.getSmilingProbability() >= 0) {
-        //      canvas.drawText(
-        //          "happiness: " + String.format("%.2f", face.getSmilingProbability()),
-        //          x + ID_X_OFFSET * 3,
-        //          y - ID_Y_OFFSET,
-        //          idPaint);
-        //    }
-
-        //    if (face.getRightEyeOpenProbability() >= 0) {
-        //      canvas.drawText(
-        //          "right eye: " + String.format("%.2f", face.getRightEyeOpenProbability()),
-        //          x - ID_X_OFFSET,
-        //          y,
-        //          idPaint);
-        //    }
-        //    if (face.getLeftEyeOpenProbability() >= 0) {
-        //      canvas.drawText(
-        //          "left eye: " + String.format("%.2f", face.getLeftEyeOpenProbability()),
-        //          x + ID_X_OFFSET * 6,
-        //          y,
-        //          idPaint);
-        //    }
         val leftEye = face.getLandmark(FirebaseVisionFaceLandmark.LEFT_EYE)
         if (leftEye != null && leftEye.position != null) {
             canvas.drawCircle(
