@@ -46,6 +46,7 @@ class FaceDetection : AppCompatActivity() {
     var currentPhotoPath: String? = null
 
     var bottomSheetBehavior : BottomSheetBehavior<*>? = null
+    var result: String? = null
 
     // Max width (portrait mode)
     private var mImageMaxWidth: Int? = null
@@ -156,7 +157,7 @@ class FaceDetection : AppCompatActivity() {
                 val selectedImageBitmap = BitmapFactory.decodeStream(contentResolver.openInputStream(selectedImage))
                 image_face_detection.setImageBitmap(selectedImageBitmap)
 
-                runFaceDetection(imageProcess(selectedImageBitmap))
+                runTFlite(imageProcess(selectedImageBitmap))
             }else if(requestCode == TAKE_PICTURE){
 
                 val options = BitmapFactory.Options()
@@ -172,22 +173,25 @@ class FaceDetection : AppCompatActivity() {
                 rotatedBitmap = when(orientation) {
                     ExifInterface.ORIENTATION_ROTATE_90 ->  rotateImage(bitmap, 90F)
                     ExifInterface.ORIENTATION_ROTATE_180 ->  rotateImage(bitmap, 180F)
-                    ExifInterface.ORIENTATION_ROTATE_270 ->  rotateImage(bitmap, 270F);
+                    ExifInterface.ORIENTATION_ROTATE_270 ->  rotateImage(bitmap, 270F)
                     else ->  bitmap
                 }
 
                 image_face_detection.setImageBitmap(rotatedBitmap)
-                runFaceDetection(imageProcess(rotatedBitmap!!))
+                runTFlite(imageProcess(rotatedBitmap!!))
             }
-
-
         }
+    }
+
+    private fun runTFlite(bitmap: Bitmap){
+        val facecate = listOf("diamond","rectangle","heart","oval","round")
+        result = facecate.random()
+        runFaceDetection(bitmap)
     }
 
     private fun runFaceDetection(bitmap:Bitmap){
 
         val image = FirebaseVisionImage.fromBitmap(bitmap)
-
         val options = FirebaseVisionFaceDetectorOptions.Builder()
             .setPerformanceMode(FirebaseVisionFaceDetectorOptions.ACCURATE)
             .setLandmarkMode(FirebaseVisionFaceDetectorOptions.ALL_LANDMARKS)
@@ -206,12 +210,10 @@ class FaceDetection : AppCompatActivity() {
 
     private fun processFaceDetection(faces : MutableList<FirebaseVisionFace>){
 
-        var smiling = ""
-
         graphic_overlay.clear()
 
         if (faces.size == 0){
-            Toast.makeText(this, "No face detected", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "No face detected result:$result", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -222,10 +224,11 @@ class FaceDetection : AppCompatActivity() {
             val faceGraphic = FaceContourGraphic(graphic_overlay)
             graphic_overlay.add(faceGraphic)
             faceGraphic.updateFace(face)
+            Toast.makeText(this, "$result", Toast.LENGTH_SHORT).show()
 
-            val smilingProb = face.smilingProbability
-
-            smiling += "face $i : $smilingProb \n"
+//            val smilingProb = face.smilingProbability
+//
+//            smiling += "face $i : $smilingProb \n"
 
 //            bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HALF_EXPANDED
 //            text_view_image_labeling.text = smiling

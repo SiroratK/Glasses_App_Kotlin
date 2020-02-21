@@ -14,16 +14,12 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    fun textRecognition(view: View){
-        startActivity(Intent(this@MainActivity, TextRecognition::class.java))
-    }
-    fun faceDetection(view: View){
+        fun faceDetection(view: View){
         startActivity(Intent(this@MainActivity, FaceDetection::class.java))
     }
-    fun barcodeScanner(view: View){
-        startActivity(Intent(this@MainActivity, BarcodeScanner::class.java))
-    }
-    fun imageLabeling(view: View){
-        startActivity(Intent(this@MainActivity, ImageLabeling::class.java))
-    }
+
+//    fun cameraStart(){
+//
+//    }
+
 }
