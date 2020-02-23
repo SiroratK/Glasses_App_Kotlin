@@ -7,10 +7,11 @@ import com.google.firebase.ml.vision.face.FirebaseVisionFaceContour
 import com.google.firebase.ml.vision.face.FirebaseVisionFaceLandmark
 
 /** Graphic instance for rendering face contours graphic overlay view.  */
-class FaceContourGraphic(overlay: GraphicOverlay) : GraphicOverlay.Graphic(overlay) {
+class FaceContourGraphic(overlay: GraphicOverlay,glassesBitmap: Bitmap) : GraphicOverlay.Graphic(overlay) {
     var previewWidth: Int? = null
     // The preview height
     var previewHeight: Int? = null
+    var glassesBitmap:Bitmap = glassesBitmap
     private var widthScaleFactor = 1.0f
     private var heightScaleFactor = 1.0f
     private val facePositionPaint: Paint
@@ -81,7 +82,6 @@ class FaceContourGraphic(overlay: GraphicOverlay) : GraphicOverlay.Graphic(overl
             Log.e("check","eye distance = $eyeDistance")
             canvas.drawRect(leftRect, topRec, rightRec, bottomRec, boxPaint)
             Log.e("check","eye distance = $eyeDistance")
-            val glassesBitmap: Bitmap = BitmapFactory.decodeResource(applicationContext.resources, R.drawable.waterdrop_glasses)
             canvas.drawBitmap(glassesBitmap, null, glassesRect, null)
         }
 
