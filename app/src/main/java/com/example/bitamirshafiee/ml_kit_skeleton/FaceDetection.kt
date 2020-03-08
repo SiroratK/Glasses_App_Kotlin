@@ -46,8 +46,9 @@ class FaceDetection : AppCompatActivity() {
         private const val PERMISSION_WRITE = 2
         private const val PERMISSION_READ = 3
     }
+
     var currentPhotoPath: String? = null
-    var bottomSheetBehavior : BottomSheetBehavior<*>? = null
+    var bottomSheetBehavior: BottomSheetBehavior<*>? = null
     var result: String? = null
 
     // Max width (portrait mode)
@@ -55,17 +56,25 @@ class FaceDetection : AppCompatActivity() {
     // Max height (portrait mode)
     private var mImageMaxHeight: Int? = null
 
+    private var classifier: Classifier? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_face_detection)
 
         bottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet)
+
+
+        classifier = Classifier(applicationContext, "converted_model.tflite")
+
+
     }
 
-    fun cameraFaceDetection(view : View){
+    fun cameraFaceDetection(view: View) {
         //check if we have camera permission
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-            != PackageManager.PERMISSION_GRANTED) {
+            != PackageManager.PERMISSION_GRANTED
+        ) {
             //if not request it
             ActivityCompat.requestPermissions(
                 this,
@@ -74,7 +83,7 @@ class FaceDetection : AppCompatActivity() {
             )
 
             //if yes take the picture
-        }else{
+        } else {
             dispatchTakePictureIntent()
 
         }
@@ -84,27 +93,29 @@ class FaceDetection : AppCompatActivity() {
     private fun dispatchTakePictureIntent() {
         //check if we have access gallery permission
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-            != PackageManager.PERMISSION_GRANTED) {
+            != PackageManager.PERMISSION_GRANTED
+        ) {
             //write permission is not granted lets request
             ActivityCompat.requestPermissions(
                 this,
                 arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
                 PERMISSION_WRITE
             )
-        }else{
+        } else {
             //if yes take the picture
             writeOnFile()
         }
 
     }
-    private fun writeOnFile(){
+
+    private fun writeOnFile() {
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         // Ensure that there's a camera activity to handle the intent
         intent.resolveActivity(packageManager)
         val photoFile: File? = try {
             createImageFile()
         } catch (ex: IOException) {
-            Log.d(TAG,"exception: $ex")
+            Log.d(TAG, "exception: $ex")
             null
 
         }
@@ -114,34 +125,36 @@ class FaceDetection : AppCompatActivity() {
             "com.example.bitamirshafiee.ml_kit_skeleton.fileprovider",
             photoFile!!
         )
-        Log.d(TAG,"photo uri: $photoURI")
+        Log.d(TAG, "photo uri: $photoURI")
         intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
         startActivityForResult(intent, TAKE_PICTURE)
     }
 
-    fun galleryFaceDetection(view : View){
+    fun galleryFaceDetection(view: View) {
         //request permission read if not granted for gallery
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-            != PackageManager.PERMISSION_GRANTED) {
+            != PackageManager.PERMISSION_GRANTED
+        ) {
             ActivityCompat.requestPermissions(
                 this,
                 arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
                 PERMISSION_READ
             )
-        }else{
-            val selectPicture = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        } else {
+            val selectPicture =
+                Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
             startActivityForResult(selectPicture, SELECT_PICTURE)
         }
     }
 
 
-    private fun createImageFile() : File{
+    private fun createImageFile(): File {
 
         val timeStamp = SimpleDateFormat("yyyyMMdd_hhmmss").format(Date())
 
-        val storageDirectory : File = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        val storageDirectory: File = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
 
-        return File.createTempFile("image_$timeStamp",".jpg", storageDirectory).apply {
+        return File.createTempFile("image_$timeStamp", ".jpg", storageDirectory).apply {
             currentPhotoPath = this.absolutePath
         }
     }
@@ -150,16 +163,17 @@ class FaceDetection : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (resultCode == Activity.RESULT_OK){
+        if (resultCode == Activity.RESULT_OK) {
 
             bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
 
             if (requestCode == SELECT_PICTURE) {
                 val selectedImage = data?.data
-                val selectedImageBitmap = BitmapFactory.decodeStream(contentResolver.openInputStream(selectedImage))
+                val selectedImageBitmap =
+                    BitmapFactory.decodeStream(contentResolver.openInputStream(selectedImage))
                 image_face_detection.setImageBitmap(selectedImageBitmap)
                 runTFlite(imageProcess(selectedImageBitmap))
-            }else if(requestCode == TAKE_PICTURE){
+            } else if (requestCode == TAKE_PICTURE) {
 
                 val options = BitmapFactory.Options()
                 options.inPreferredConfig = Bitmap.Config.ARGB_8888
@@ -168,14 +182,15 @@ class FaceDetection : AppCompatActivity() {
                 val ei = ExifInterface(currentPhotoPath)
                 val orientation = ei.getAttributeInt(
                     ExifInterface.TAG_ORIENTATION,
-                    ExifInterface.ORIENTATION_UNDEFINED)
-                var rotatedBitmap : Bitmap? = null
+                    ExifInterface.ORIENTATION_UNDEFINED
+                )
+                var rotatedBitmap: Bitmap? = null
 
-                rotatedBitmap = when(orientation) {
-                    ExifInterface.ORIENTATION_ROTATE_90 ->  rotateImage(bitmap, 90F)
-                    ExifInterface.ORIENTATION_ROTATE_180 ->  rotateImage(bitmap, 180F)
-                    ExifInterface.ORIENTATION_ROTATE_270 ->  rotateImage(bitmap, 270F)
-                    else ->  bitmap
+                rotatedBitmap = when (orientation) {
+                    ExifInterface.ORIENTATION_ROTATE_90 -> rotateImage(bitmap, 90F)
+                    ExifInterface.ORIENTATION_ROTATE_180 -> rotateImage(bitmap, 180F)
+                    ExifInterface.ORIENTATION_ROTATE_270 -> rotateImage(bitmap, 270F)
+                    else -> bitmap
                 }
 
                 image_face_detection.setImageBitmap(rotatedBitmap)
@@ -184,27 +199,46 @@ class FaceDetection : AppCompatActivity() {
         }
     }
 
-    private fun runTFlite(bitmap: Bitmap){
-        val facecate = listOf("diamond","heart")
-//        result = facecate.random()
-        result = "diamond"
-        if (result=="diamond"){
+    private fun runTFlite(bitmap: Bitmap) {
+        val prediction = classifier
+        if(prediction != null){
+            prediction.predict(bitmap);
+        }
+        val facecate = listOf("diamond", "heart","oval","round","rectangle")
+        result = facecate.random()
+//        result = "round"
+        if (result == "diamond") {
             setContentView(R.layout.activity_diamond)
             image_face_detection_ml.setImageBitmap(bitmap)
-            Log.e(TAG,"diamond")
+            Log.e(TAG, "diamond")
             //run face detection after click only!!
             runFaceDetection(bitmap)
 
-        }else if (result == "heart"){
+        } else if (result == "heart") {
             setContentView(R.layout.activity_heart)
             image_face_detection_ml.setImageBitmap(bitmap)
-            Log.e(TAG,"heart")
+            Log.e(TAG, "heart")
+            runFaceDetection(bitmap)
+        }else if (result == "oval"){
+            setContentView(R.layout.activity_oval)
+            image_face_detection_ml.setImageBitmap(bitmap)
+            Log.e(TAG,"oval")
+            runFaceDetection(bitmap)
+        }else if (result == "rectangle"){
+            setContentView(R.layout.activity_rec)
+            image_face_detection_ml.setImageBitmap(bitmap)
+            Log.e(TAG,"rectangle")
+            runFaceDetection(bitmap)
+        }else{
+            setContentView(R.layout.activity_round)
+            image_face_detection_ml.setImageBitmap(bitmap)
+            Log.e(TAG,"round")
             runFaceDetection(bitmap)
         }
 
     }
 
-    private fun runFaceDetection(bitmap:Bitmap){
+    private fun runFaceDetection(bitmap: Bitmap) {
 
         val image = FirebaseVisionImage.fromBitmap(bitmap)
         val options = FirebaseVisionFaceDetectorOptions.Builder()
@@ -224,35 +258,152 @@ class FaceDetection : AppCompatActivity() {
             }
     }
 
-    private fun processFaceDetection(faces : MutableList<FirebaseVisionFace>){
+    private fun processFaceDetection(faces: MutableList<FirebaseVisionFace>) {
 
         graphic_overlay2.clear()
-        var glassesBitmap :Bitmap
+        var glassesBitmap: Bitmap
 
-        if (faces.size == 0){
+        if (faces.size == 0) {
             Toast.makeText(this, "No face detected result:$result", Toast.LENGTH_SHORT).show()
             return
         }
 
-        for ( i in faces.indices){
+        for (i in faces.indices) {
 
             val face = faces[i]
-            if(result=="diamond"){
-            val btn1 = findViewById<CircularImageView>(R.id.diamond_1)
+            if (result == "diamond") {
+
+                val btn1 = findViewById<CircularImageView>(R.id.diamond_1)
                 btn1.setOnClickListener {
                     // your code to perform when the user clicks on the button
-                    glassesBitmap = BitmapFactory.decodeResource(applicationContext.resources, R.drawable.waterdrop_glasses)
-                    setGrapphic(glassesBitmap,face)
+                    glassesBitmap = BitmapFactory.decodeResource(
+                        applicationContext.resources,
+                        R.drawable.round_rec
+                    )
+                    setGrapphic(glassesBitmap, face)
                 }
-            val btn2 = findViewById<CircularImageView>(R.id.diamond_2)
+                val btn2 = findViewById<CircularImageView>(R.id.diamond_2)
                 btn2.setOnClickListener {
-                    Toast.makeText(this,"image button 2 was clicked!!",Toast.LENGTH_SHORT).show()
-                    glassesBitmap = BitmapFactory.decodeResource(applicationContext.resources, R.drawable.rec_glasses)
-                    setGrapphic(glassesBitmap,face)
+                    glassesBitmap = BitmapFactory.decodeResource(
+                        applicationContext.resources,
+                        R.drawable.cat_eye1
+                    )
+                    setGrapphic(glassesBitmap, face)
                 }
-            }
-            else if (result == "heart") {
-
+                val btn3 = findViewById<CircularImageView>(R.id.diamond_3)
+                btn3.setOnClickListener {
+                    glassesBitmap = BitmapFactory.decodeResource(
+                        applicationContext.resources,
+                        R.drawable.cat_eye_2
+                    )
+                    setGrapphic(glassesBitmap, face)
+                }
+            } else if (result == "round") {
+                val btn1 = findViewById<CircularImageView>(R.id.round_1)
+                btn1.setOnClickListener {
+                    // your code to perform when the user clicks on the button
+                    glassesBitmap = BitmapFactory.decodeResource(
+                        applicationContext.resources,
+                        R.drawable.water_cat
+                    )
+                    setGrapphic(glassesBitmap, face)
+                }
+                val btn2 = findViewById<CircularImageView>(R.id.round_2)
+                btn2.setOnClickListener {
+                    glassesBitmap = BitmapFactory.decodeResource(
+                        applicationContext.resources,
+                        R.drawable.rec_glasses
+                    )
+                    setGrapphic(glassesBitmap, face)
+                }
+                val btn3 = findViewById<CircularImageView>(R.id.round_3)
+                btn3.setOnClickListener {
+                    glassesBitmap = BitmapFactory.decodeResource(
+                        applicationContext.resources,
+                        R.drawable.hex_rec
+                    )
+                    setGrapphic(glassesBitmap, face)
+                }
+            } else if (result == "oval") {
+                val btn1 = findViewById<CircularImageView>(R.id.oval_1)
+                btn1.setOnClickListener {
+                    // your code to perform when the user clicks on the button
+                    glassesBitmap = BitmapFactory.decodeResource(
+                        applicationContext.resources,
+                        R.drawable.waterdrop_glasses
+                    )
+                    setGrapphic(glassesBitmap, face)
+                }
+                val btn2 = findViewById<CircularImageView>(R.id.oval_2)
+                btn2.setOnClickListener {
+                    glassesBitmap = BitmapFactory.decodeResource(
+                        applicationContext.resources,
+                        R.drawable.rec_glasses
+                    )
+                    setGrapphic(glassesBitmap, face)
+                }
+                val btn3 = findViewById<CircularImageView>(R.id.oval_3)
+                btn3.setOnClickListener {
+                    glassesBitmap = BitmapFactory.decodeResource(
+                        applicationContext.resources,
+                        R.drawable.round_rec
+                    )
+                    setGrapphic(glassesBitmap, face)
+                }
+            } else if (result == "rectangle") {
+                val btn1 = findViewById<CircularImageView>(R.id.rec_1)
+                btn1.setOnClickListener {
+                    // your code to perform when the user clicks on the button
+                    glassesBitmap = BitmapFactory.decodeResource(
+                        applicationContext.resources,
+                        R.drawable.waterdrop_glasses
+                    )
+                    setGrapphic(glassesBitmap, face)
+                }
+                val btn2 = findViewById<CircularImageView>(R.id.rec_2)
+                btn2.setOnClickListener {
+                    glassesBitmap = BitmapFactory.decodeResource(
+                        applicationContext.resources,
+                        R.drawable.oval_rec
+                    )
+                    setGrapphic(glassesBitmap, face)
+                }
+                val btn3 = findViewById<CircularImageView>(R.id.rec_3)
+                btn3.setOnClickListener {
+                    glassesBitmap = BitmapFactory.decodeResource(
+                        applicationContext.resources,
+                        R.drawable.round_rec
+                    )
+                    setGrapphic(glassesBitmap, face)
+                }
+            } else if (result == "heart") {
+                val btn1 = findViewById<CircularImageView>(R.id.heart_1)
+                btn1.setOnClickListener {
+                    // your code to perform when the user clicks on the button
+                    glassesBitmap = BitmapFactory.decodeResource(
+                        applicationContext.resources,
+                        R.drawable.round_rec
+                    )
+                    setGrapphic(glassesBitmap, face)
+                }
+                val btn2 = findViewById<CircularImageView>(R.id.heart_2)
+                btn2.setOnClickListener {
+                    glassesBitmap = BitmapFactory.decodeResource(
+                        applicationContext.resources,
+                        R.drawable.cat_eye_2
+                    )
+                    setGrapphic(glassesBitmap, face)
+                }
+                val btn3 = findViewById<CircularImageView>(R.id.heart_3)
+                btn3.setOnClickListener {
+                    glassesBitmap = BitmapFactory.decodeResource(
+                        applicationContext.resources,
+                        R.drawable.oval_rec
+                    )
+                    setGrapphic(glassesBitmap, face)
+                }
+            } else {
+                Toast.makeText(this, "result error", Toast.LENGTH_SHORT).show()
             }
             Toast.makeText(this, "$result", Toast.LENGTH_SHORT).show()
 //            val smilingProb = face.smilingProbability
@@ -264,14 +415,14 @@ class FaceDetection : AppCompatActivity() {
         }
     }
 
-    private fun setGrapphic(glassesBitmap:Bitmap,face:FirebaseVisionFace){
+    private fun setGrapphic(glassesBitmap: Bitmap, face: FirebaseVisionFace) {
         graphic_overlay2.clear()
-        val faceGraphic = FaceContourGraphic(graphic_overlay2,glassesBitmap)
+        val faceGraphic = FaceContourGraphic(graphic_overlay2, glassesBitmap)
         graphic_overlay2.add(faceGraphic)
         faceGraphic.updateFace(face)
     }
 
-    private fun imageProcess(bitmap:Bitmap):Bitmap{
+    private fun imageProcess(bitmap: Bitmap): Bitmap {
 
         val targetedSize = getTargetedWidthHeight()
 
@@ -346,18 +497,22 @@ class FaceDetection : AppCompatActivity() {
         return mImageMaxHeight
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
-        when(requestCode){
-            PERMISSION_CAMERA ->{
+        when (requestCode) {
+            PERMISSION_CAMERA -> {
                 //check if permission is granted
                 if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                     //camera permission is granted
                     dispatchTakePictureIntent()
                 }
             }
-            PERMISSION_WRITE ->{
+            PERMISSION_WRITE -> {
                 //check if permission is granted
                 if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                     writeOnFile()
@@ -366,7 +521,8 @@ class FaceDetection : AppCompatActivity() {
             PERMISSION_READ -> {
                 //check if permission is granted
                 if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    val selectPicture = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                    val selectPicture =
+                        Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
                     startActivityForResult(selectPicture, SELECT_PICTURE)
                 }
             }

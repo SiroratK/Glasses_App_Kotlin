@@ -18,11 +18,6 @@ class FaceContourGraphic(overlay: GraphicOverlay,glassesBitmap: Bitmap) : Graphi
     private val idPaint: Paint
     private val boxPaint: Paint
 
-
-
-
-
-
     @Volatile
     private var firebaseVisionFace: FirebaseVisionFace? = null
 

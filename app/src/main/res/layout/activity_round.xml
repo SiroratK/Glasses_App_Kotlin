@@ -1,6 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical" android:layout_width="match_parent"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
         android:layout_height="match_parent">
+    <include layout="@layout/image_detect_mlkit"/>
+    <HorizontalScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="20dp"
+            >
 
-</LinearLayout>
+        <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+            <com.mikhaellopez.circularimageview.CircularImageView
+                    android:id="@+id/round_1"
+                    android:layout_marginLeft="10dp"
+                    android:layout_width="90dp"
+                    android:layout_height="90dp"
+                    android:src="@drawable/water_cat_btn"
+                    app:civ_border_width="2dp"
+                    app:civ_border_color="@android:color/darker_gray"
+                    />
+
+            <com.mikhaellopez.circularimageview.CircularImageView
+                    android:id="@+id/round_2"
+                    android:layout_marginLeft="10dp"
+                    android:layout_width="90dp"
+                    android:layout_height="90dp"
+                    android:src="@drawable/glass2_btn"
+                    app:civ_border_width="2dp"
+                    app:civ_border_color="@android:color/darker_gray"
+            />
+
+            <com.mikhaellopez.circularimageview.CircularImageView
+                    android:id="@+id/round_3"
+                    android:layout_marginLeft="10dp"
+                    android:layout_width="90dp"
+                    android:layout_height="90dp"
+                    android:src="@drawable/hex_btn"
+                    app:civ_border_width="2dp"
+                    app:civ_border_color="@android:color/darker_gray"
+                    />
+        </LinearLayout>
+    </HorizontalScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
