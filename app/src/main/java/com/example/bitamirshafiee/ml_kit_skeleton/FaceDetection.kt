@@ -2,6 +2,8 @@ package com.example.bitamirshafiee.ml_kit_skeleton
 
 import android.Manifest
 import android.app.Activity
+import android.app.AlertDialog
+import android.app.ProgressDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -12,6 +14,7 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
+import android.os.Handler
 import android.provider.MediaStore
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import androidx.core.content.FileProvider
@@ -19,6 +22,7 @@ import android.util.Log
 import android.util.Pair
 import android.view.View
 import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -58,6 +62,7 @@ class FaceDetection : AppCompatActivity() {
 
     private var classifier: Classifier? = null
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_face_detection)
@@ -65,7 +70,7 @@ class FaceDetection : AppCompatActivity() {
         bottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet)
 
 
-        classifier = Classifier(applicationContext, "converted_model.tflite")
+        classifier = Classifier(applicationContext, "converted_Xception_model.tflite")
 
 
     }
@@ -172,7 +177,7 @@ class FaceDetection : AppCompatActivity() {
                 val selectedImageBitmap =
                     BitmapFactory.decodeStream(contentResolver.openInputStream(selectedImage))
                 image_face_detection.setImageBitmap(selectedImageBitmap)
-                runTFlite(imageProcess(selectedImageBitmap))
+                runFaceDetection(imageProcess(selectedImageBitmap))
             } else if (requestCode == TAKE_PICTURE) {
 
                 val options = BitmapFactory.Options()
@@ -194,48 +199,51 @@ class FaceDetection : AppCompatActivity() {
                 }
 
                 image_face_detection.setImageBitmap(rotatedBitmap)
-                runTFlite(imageProcess(rotatedBitmap!!))
+                runFaceDetection(imageProcess(rotatedBitmap!!))
             }
         }
     }
 
-    private fun runTFlite(bitmap: Bitmap) {
+    private fun runTFlite(bitmap: Bitmap,faces: MutableList<FirebaseVisionFace>) {
+
         val prediction = classifier
         if(prediction != null){
-            prediction.predict(bitmap);
+            result = prediction.predict(bitmap)
         }
-        val facecate = listOf("diamond", "heart","oval","round","rectangle")
-        result = facecate.random()
-//        result = "round"
-        if (result == "diamond") {
+
+        if (result == "oblong") {
+            Log.e(TAG, "oblong")
             setContentView(R.layout.activity_diamond)
             image_face_detection_ml.setImageBitmap(bitmap)
-            Log.e(TAG, "diamond")
+
             //run face detection after click only!!
-            runFaceDetection(bitmap)
 
         } else if (result == "heart") {
+            Log.e(TAG, "heart")
             setContentView(R.layout.activity_heart)
             image_face_detection_ml.setImageBitmap(bitmap)
-            Log.e(TAG, "heart")
-            runFaceDetection(bitmap)
+
+
         }else if (result == "oval"){
+            Log.e(TAG,"oval")
             setContentView(R.layout.activity_oval)
             image_face_detection_ml.setImageBitmap(bitmap)
-            Log.e(TAG,"oval")
-            runFaceDetection(bitmap)
-        }else if (result == "rectangle"){
+
+
+        }else if (result == "square"){
+            Log.e(TAG,"square")
             setContentView(R.layout.activity_rec)
             image_face_detection_ml.setImageBitmap(bitmap)
-            Log.e(TAG,"rectangle")
-            runFaceDetection(bitmap)
-        }else{
-            setContentView(R.layout.activity_round)
-            image_face_detection_ml.setImageBitmap(bitmap)
-            Log.e(TAG,"round")
-            runFaceDetection(bitmap)
+
         }
 
+        else if (result == "round")
+        {   Log.e(TAG,"round")
+            setContentView(R.layout.activity_round)
+            image_face_detection_ml.setImageBitmap(bitmap)
+
+        }
+        processFaceDetection(faces)
     }
 
     private fun runFaceDetection(bitmap: Bitmap) {
@@ -248,15 +256,30 @@ class FaceDetection : AppCompatActivity() {
             .setContourMode(FirebaseVisionFaceDetectorOptions.ALL_CONTOURS).build()
 
         val detector = FirebaseVision.getInstance().getVisionFaceDetector(options)
-
+        val progressDialog = ProgressDialog(this)
+        progressDialog.setMessage("Dowloading...")
+        progressDialog.setCancelable(false)
+        progressDialog.show()
         detector.detectInImage(image)
             .addOnSuccessListener {
-                processFaceDetection(it)
-
+                //have pic
+                if (it.size == 0){
+                    Toast.makeText(this, "No face detected please try again", Toast.LENGTH_SHORT).show()
+                    //popup no face detection result please select new Image
+//                    setContentView(R.layout.activity_face_detection)
+                    progressDialog.dismiss()
+                }
+                else{
+                    runTFlite(bitmap,it)
+                    progressDialog.dismiss()
+                }
             }.addOnFailureListener {
                 Toast.makeText(this, "process Failed", Toast.LENGTH_SHORT).show()
+                //have no pic error
+                progressDialog.dismiss()
             }
     }
+
 
     private fun processFaceDetection(faces: MutableList<FirebaseVisionFace>) {
 
@@ -264,14 +287,12 @@ class FaceDetection : AppCompatActivity() {
         var glassesBitmap: Bitmap
 
         if (faces.size == 0) {
-            Toast.makeText(this, "No face detected result:$result", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "No face detected result", Toast.LENGTH_SHORT).show()
             return
         }
-
         for (i in faces.indices) {
-
             val face = faces[i]
-            if (result == "diamond") {
+            if (result == "oblong") {
 
                 val btn1 = findViewById<CircularImageView>(R.id.diamond_1)
                 btn1.setOnClickListener {
@@ -350,7 +371,7 @@ class FaceDetection : AppCompatActivity() {
                     )
                     setGrapphic(glassesBitmap, face)
                 }
-            } else if (result == "rectangle") {
+            } else if (result == "square") {
                 val btn1 = findViewById<CircularImageView>(R.id.rec_1)
                 btn1.setOnClickListener {
                     // your code to perform when the user clicks on the button

@@ -9,8 +9,10 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:contentDescription="@string/image_text_recognition_desc"
-            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             tools:srcCompat="@drawable/face_1" android:scaleType="fitStart"/>
 
     <com.example.bitamirshafiee.ml_kit_skeleton.GraphicOverlay

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ML-Kit-Skeleton</string>
+    <string name="app_name">Glasses select</string>
     <string name="text_recognition_string">Text Recognition</string>
     <string name="camera_description">camera take image</string>
     <string name="text_view_text_recognition">recognized text</string>

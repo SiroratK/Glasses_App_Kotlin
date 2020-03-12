@@ -75,14 +75,14 @@ class FaceContourGraphic(overlay: GraphicOverlay,glassesBitmap: Bitmap) : Graphi
                 translateX(rightE.position.x).toInt()+(delta).toInt(),
                 translateY(rightE.position.y).toInt()+delta)
             Log.e("check","eye distance = $eyeDistance")
-            canvas.drawRect(leftRect, topRec, rightRec, bottomRec, boxPaint)
+//            canvas.drawRect(leftRect, topRec, rightRec, bottomRec, boxPaint)
             Log.e("check","eye distance = $eyeDistance")
             canvas.drawBitmap(glassesBitmap, null, glassesRect, null)
         }
 
 
-        canvas.drawCircle(x, y, FACE_POSITION_RADIUS, facePositionPaint)
-        canvas.drawText("id: " + face.trackingId, x + ID_X_OFFSET, y + ID_Y_OFFSET, idPaint)
+//        canvas.drawCircle(x, y, FACE_POSITION_RADIUS, facePositionPaint)
+//        canvas.drawText("id: " + face.trackingId, x + ID_X_OFFSET, y + ID_Y_OFFSET, idPaint)
 
 
         // Draws a bounding box around the face.

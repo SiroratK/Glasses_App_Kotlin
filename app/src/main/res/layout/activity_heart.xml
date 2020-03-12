@@ -5,7 +5,16 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
     <include layout="@layout/image_detect_mlkit"/>
+    <ImageView
+            android:id="@+id/popup_btn"
+            android:layout_width="33dp"
+            android:layout_height="33dp"
+            android:src="@drawable/ic_lightbulb_outline"
+            android:layout_marginTop="20dp"
+            android:layout_gravity="center_horizontal"/>
+
     <HorizontalScrollView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -13,7 +22,6 @@
             android:layout_gravity="bottom"
             android:layout_marginBottom="20dp"
             >
-
         <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -28,7 +36,6 @@
                     app:civ_border_width="2dp"
                     app:civ_border_color="@android:color/darker_gray"
                     />
-
             <com.mikhaellopez.circularimageview.CircularImageView
                     android:layout_marginLeft="10dp"
                     android:id="@+id/heart_2"
@@ -37,7 +44,6 @@
                     android:src="@drawable/cat_2btn"
                     app:civ_border_width="2dp"
                     app:civ_border_color="@android:color/darker_gray"
-
                     />
 
             <com.mikhaellopez.circularimageview.CircularImageView
