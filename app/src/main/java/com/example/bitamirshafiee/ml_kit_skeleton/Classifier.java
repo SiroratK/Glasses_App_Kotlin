@@ -5,6 +5,10 @@ import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Paint;
 import android.os.Trace;
 import android.util.Log;
 
@@ -69,7 +73,7 @@ public class Classifier {
 
             probabilityProcessor = new TensorProcessor.Builder().build();
 
-            labels = FileUtil.loadLabels(context,labelPath);
+            labels = FileUtil.loadLabels(context, labelPath);
             Log.d("Classifier", "Image shape : " + Arrays.toString(imageShape));
 
         } catch (Exception e) {
@@ -77,9 +81,7 @@ public class Classifier {
         }
 
 
-
     }
-
 
 
     private static MappedByteBuffer loadModelFile(AssetManager assets, String modelFilename)
@@ -101,12 +103,12 @@ public class Classifier {
         inputImageBuffer = loadImage(bitmap);
         model.run(inputImageBuffer.getBuffer(), outputProbabilityBuffer.getBuffer().rewind());
         Log.d("Classifier", "Done !!" + Arrays.toString(outputProbabilityBuffer.getFloatArray()));
-        Log.d("Classifier","label = "+labels);
+        Log.d("Classifier", "label = " + labels);
         Map<String, Float> labeledProbability =
                 new TensorLabel(labels, probabilityProcessor.process(outputProbabilityBuffer))
                         .getMapWithFloatValue();
         Trace.endSection();
-        Log.d("Classifier","result = "+getTopKProbability(labeledProbability));
+        Log.d("Classifier", "result = " + getTopKProbability(labeledProbability));
         return getTopKProbability(labeledProbability);
     }
 
@@ -114,7 +116,7 @@ public class Classifier {
         float Maxvalue = (Collections.max(labelProb.values()));
 
         for (Map.Entry<String, Float> entry : labelProb.entrySet()) {
-            if (entry.getValue()==Maxvalue) {
+            if (entry.getValue() == Maxvalue) {
                 String max = entry.getKey();     // Print the key with max value
                 return max;
             }
@@ -122,9 +124,17 @@ public class Classifier {
         return "nothing";
     }
 
+
+
     private TensorImage loadImage(final Bitmap bitmap) {
         // Loads bitmap into a TensorImage.
+        if(bitmap == null){
+            Log.d("bitmap","null");
+        }else{
+            Log.d("bitmap","not null");
+        }
         inputImageBuffer.load(bitmap);
+
 
         // Creates processor for the TensorImage.
         int cropSize = Math.min(bitmap.getWidth(), bitmap.getHeight());
@@ -136,7 +146,4 @@ public class Classifier {
                         .build();
         return imageProcessor.process(inputImageBuffer);
     }
-
-
-
 }

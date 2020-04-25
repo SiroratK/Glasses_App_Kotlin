@@ -4,6 +4,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+
     <ImageView
             android:id="@+id/image_face_detection_ml"
             android:layout_width="0dp"
@@ -12,6 +13,21 @@
             app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="parent"
             tools:srcCompat="@drawable/face_1" android:scaleType="fitStart"/>
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="20dp">
+        <ImageView
+                android:id="@+id/save_pic"
+                android:layout_width="33dp"
+                android:layout_height="33dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="10dp"
+                android:layout_gravity="end"
+                android:src="@drawable/ic_file_download_black" />
+    </LinearLayout>
+
+
 
     <com.example.bitamirshafiee.ml_kit_skeleton.GraphicOverlay
             android:id="@+id/graphic_overlay2"

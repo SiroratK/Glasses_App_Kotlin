@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">Glasses select</string>
     <string name="text_recognition_string">Text Recognition</string>
     <string name="camera_description">camera take image</string>
@@ -6,4 +6,6 @@
     <string name="image_text_recognition_desc">image text recognition description</string>
     <string name="gallery_description">gallery image</string>
     <string name="title_activity_image_labeling">ImageLabeling</string>
+    <string name="face_Information">face information</string>
+    <string name="face_label">face_label</string>
 </resources>

@@ -64,7 +64,7 @@ class FaceContourGraphic(overlay: GraphicOverlay,glassesBitmap: Bitmap) : Graphi
         var glassPoint :Int? = null
         if (leftE != null && rightE != null) {
             val eyeDistance = rightE.position.x - leftE.position.x
-            val delta = (widthScaleFactor * eyeDistance / 2).toInt()
+            val delta = (widthScaleFactor * eyeDistance / 1.5).toInt()
             val leftRect = translateX(leftE.position.x)-delta
             val topRec = translateY(leftE.position.y)-delta
             val rightRec = translateX(rightE.position.x)+delta
@@ -92,52 +92,52 @@ class FaceContourGraphic(overlay: GraphicOverlay,glassesBitmap: Bitmap) : Graphi
         val top = y - yOffset
         val right = x + xOffset
         val bottom = y + yOffset
-        canvas.drawRect(left, top, right, bottom, boxPaint)
+//        canvas.drawRect(left, top, right, bottom, boxPaint)
 
 
         val contour = face.getContour(FirebaseVisionFaceContour.FACE)
         for (point in contour.points) {
             val px = translateX(point.x!!)
             val py = translateY(point.y!!)
-            canvas.drawCircle(px, py, FACE_POSITION_RADIUS, facePositionPaint)
+//            canvas.drawCircle(px, py, FACE_POSITION_RADIUS, facePositionPaint)
         }
 
         val leftEye = face.getLandmark(FirebaseVisionFaceLandmark.LEFT_EYE)
         if (leftEye != null && leftEye.position != null) {
-            canvas.drawCircle(
-                translateX(leftEye.position.x!!),
-                translateY(leftEye.position.y!!),
-                FACE_POSITION_RADIUS,
-                facePositionPaint
-            )
+//            canvas.drawCircle(
+//                translateX(leftEye.position.x!!),
+//                translateY(leftEye.position.y!!),
+//                FACE_POSITION_RADIUS,
+//                facePositionPaint
+//            )
         }
         val rightEye = face.getLandmark(FirebaseVisionFaceLandmark.RIGHT_EYE)
         if (rightEye != null && rightEye.position != null) {
-            canvas.drawCircle(
-                translateX(rightEye.position.x!!),
-                translateY(rightEye.position.y!!),
-                FACE_POSITION_RADIUS,
-                facePositionPaint
-            )
+//            canvas.drawCircle(
+//                translateX(rightEye.position.x!!),
+//                translateY(rightEye.position.y!!),
+//                FACE_POSITION_RADIUS,
+//                facePositionPaint
+//            )
         }
 
         val leftCheek = face.getLandmark(FirebaseVisionFaceLandmark.LEFT_CHEEK)
         if (leftCheek != null && leftCheek.position != null) {
-            canvas.drawCircle(
-                translateX(leftCheek.position.x!!),
-                translateY(leftCheek.position.y!!),
-                FACE_POSITION_RADIUS,
-                facePositionPaint
-            )
+//            canvas.drawCircle(
+//                translateX(leftCheek.position.x!!),
+//                translateY(leftCheek.position.y!!),
+//                FACE_POSITION_RADIUS,
+//                facePositionPaint
+//            )
         }
         val rightCheek = face.getLandmark(FirebaseVisionFaceLandmark.RIGHT_CHEEK)
         if (rightCheek != null && rightCheek.position != null) {
-            canvas.drawCircle(
-                translateX(rightCheek.position.x!!),
-                translateY(rightCheek.position.y!!),
-                FACE_POSITION_RADIUS,
-                facePositionPaint
-            )
+//            canvas.drawCircle(
+//                translateX(rightCheek.position.x!!),
+//                translateY(rightCheek.position.y!!),
+//                FACE_POSITION_RADIUS,
+//                facePositionPaint
+//            )
         }
     }
 

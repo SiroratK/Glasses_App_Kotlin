@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center">
+
+
+    <androidx.cardview.widget.CardView
+            android:layout_marginVertical="15dp"
+            android:layout_width="match_parent"
+            android:layout_marginHorizontal="30dp"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="5dp">
+
+        <LinearLayout
+                android:padding="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical">
+
+            <TextView
+                    android:id="@+id/titleText"
+                    android:layout_gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="หน้าทรงเหลี่ยม"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:padding="10dp"/>
+            <TextView
+                    android:id="@+id/descriptionText"
+                    android:layout_margin="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="คนที่มีหน้าทรงเหลี่ยมไม่ควรใส่แว่นทรงเหลี่ยมที่จะทำให้ใบหน้าดูแข็งเกินไป ควรเลือกแว่นที่มีความโค้งมนช่วยให้หน้าดูเรียวยาว และช่วยลดความเหลี่ยมบนใบหน้า เช่นทรงกลมทรงรีและทรงหยดน้ำ"/>
+
+            <Button
+                    android:id="@+id/textOk"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="OK"/>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>

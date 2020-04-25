@@ -33,6 +33,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.0.0'
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'com.google.firebase:firebase-messaging:20.0.1'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
@@ -43,11 +44,16 @@ dependencies {
     implementation 'com.google.firebase:firebase-ml-vision-face-model:18.0.0'
     //image labling
     implementation 'com.google.firebase:firebase-ml-vision-image-label-model:18.0.0'
+    implementation'com.google.firebase:firebase-auth:19.3.0'
     implementation 'com.mikhaellopez:circularimageview:4.2.0'
     implementation 'de.hdodenhof:circleimageview:3.1.0'
 
     //tensorflow lite
     implementation 'org.tensorflow:tensorflow-lite:0.0.0-nightly'
     implementation 'org.tensorflow:tensorflow-lite-support:0.0.0-nightly'
+
+    //dot loader
+    implementation 'com.agrawalsuneet.androidlibs:dotsloader:1.4'
+
 }
 apply plugin: 'com.google.gms.google-services'
